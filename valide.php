@@ -150,7 +150,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <th>Numéro de Transaction</th>
                                     <th>Photo du Paiement</th>
                                     <th>Date</th>
-                                    <th>Action</th> <!-- Nouvelle colonne pour l'action -->
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
