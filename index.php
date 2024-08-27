@@ -45,7 +45,7 @@
 						<a class="nav-link" href="formation.php">Formation</a>
 					</li>
 					<li class="nav-item pe-4">
-						<a class="nav-link" href="doc/maquette-catalogue-2022-kb.pdf">A propos</a>
+						<a class="nav-link" href="/doc/maquette-catalogue-2022-kb.pdf">A propos</a>
 					</li>
 					<li class="nav-item pe-4">
 						<a class="nav-link" href="login.php">Inscription</a>
@@ -57,7 +57,6 @@
 			</div>
 		</div>
 	</nav>
-	<br><br><br><br>
 	<section class="banner d-flex justify-content-center align-items-center pt-5">
 		<div class="container my-5 py-5">
 			<div class="row">
