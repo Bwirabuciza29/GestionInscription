@@ -17,6 +17,19 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt = $conn->prepare("UPDATE notification SET seen = TRUE WHERE user_id = :user_id AND seen = FALSE");
 $stmt->bindParam(':user_id', $userId);
 $stmt->execute();
+
+$userId = $_SESSION['user_id'];
+$stmt = $conn->prepare("SELECT * FROM notifications WHERE idApprenant = :user_id ORDER BY dateNotification DESC");
+$stmt->bindParam(':user_id', $userId);
+$stmt->execute();
+$notif = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Modification
+// Marquer les notifications comme lues une fois qu'elles sont affichées
+$stmt = $conn->prepare("UPDATE notifications SET statut = 'lu' WHERE idApprenant = :user_id AND statut = 'non lu'");
+$stmt->bindParam(':user_id', $userId);
+$stmt->execute();
+// Compter le nombre total de notifications
+$totalNotifCount = count($notif);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -146,39 +159,39 @@ $stmt->execute();
                     </ul><!-- End Notification Dropdown Items -->
                 </li>
 
-                <!-- <li class="nav-item dropdown">
+                <li class="nav-item dropdown">
                     <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-chat-left-text"></i>
-                        <span class="badge bg-success badge-number"><?= $notificationCount ?></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+                        <span class="badge bg-success badge-number"><?php echo $totalNotifCount; ?></span>
+                    </a><!-- End Notification Icon -->
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                         <li class="dropdown-header">
-                            Vous avez <?= $notificationCount ?> nouveau message
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                            Vous avez <?php echo $totalNotifCount; ?> nouveau Message
+                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">Voir tout</span></a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <?php foreach ($notificationss as $notification) : ?>
-                            <li class="message-item">
-                                <a href="#">
-                                    <img src="assets/img/default-user.png" alt="" class="rounded-circle">
-                                    <div>
-                                        <h4>Administration UMOJA NI NGUVU</h4>
-                                        <p><?= htmlspecialchars($notification['message']) ?></p>
-                                        <p><?= $notification['dateNotification'] ?></p>
-                                    </div>
-                                </a>
+
+                        <?php foreach ($notif as $notification): ?>
+                            <li class="notification-item">
+                                <i class="bi bi-info-circle text-primary"></i>
+                                <div>
+                                    <h4>Message</h4>
+                                    <p><?php echo htmlspecialchars($notification['message']); ?></p>
+                                    <p><?php echo date('d M Y H:i', strtotime($notification['dateNotification'])); ?></p>
+                                </div>
                             </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                         <?php endforeach; ?>
+
                         <li class="dropdown-footer">
-                            <a href="#">Show all messages</a>
+                            <a href="#">Afficher tout les Messages</a>
                         </li>
-                    </ul>
-                </li> -->
+                    </ul><!-- End Notification Dropdown Items -->
+                </li>
 
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
