@@ -72,7 +72,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['category'] !== 'Apprenant') {
                     </h1>
                     <p>
                         <a href="doc/FICHE-D-RENSEIGNEMENTS-2020-....docx.pdf" align="center">
-                            <button class="btn btn-order btn-lg me-5 rounded-0 merriweather">
+                            <button class="btn btn-order btn-lg me-3 rounded-0 merriweather">
                                 <i> fiche de renseignement</i>
                             </button>
                         </a>
