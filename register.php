@@ -78,9 +78,11 @@ require_once('config.php');
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="category" class="form-label">Catégorie</label>
-                                        <input type="text" name="category" class="form-control" id="category" required>
-                                        <div class="invalid-feedback">Veuillez entrer la catégorie!</div>
+                                        <label for="category" class="form-label">Categorie</label>
+                                        <select name="category" class="form-select" id="category" required>
+                                            <option value="Apprenant">Apprenant</option>
+                                        </select>
+                                        <div class="invalid-feedback">Veuillez sélectionner votre Categorie!</div>
                                     </div>
 
                                     <div class="col-12">

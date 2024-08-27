@@ -45,7 +45,7 @@
 						<a class="nav-link" href="formation.php">Formation</a>
 					</li>
 					<li class="nav-item pe-4">
-						<a class="nav-link" href="maquette-catalogue-2022-kb.pdf">A propos</a>
+						<a class="nav-link" href="doc/maquette-catalogue-2022-kb.pdf">A propos</a>
 					</li>
 					<li class="nav-item pe-4">
 						<a class="nav-link" href="login.php">Inscription</a>
