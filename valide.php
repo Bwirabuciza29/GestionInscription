@@ -62,7 +62,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Les Inscriptions en attente</h1>
+        <h1>Les Inscriptions Validée</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.html">Accueil</a></li>
@@ -133,7 +133,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <div class="card">
                     <div class="card-body table-responsive">
-                        <h5 class="card-title">Inscriptions en Attente</h5>
+                        <h5 class="card-title">Inscriptions en Validées</h5>
                         <table class="table datatable">
                             <thead>
                                 <tr>
@@ -141,7 +141,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <th>Matricule</th>
                                     <th>Nom</th>
                                     <th>Postnom</th>
-                                    <th>Prenom</th>
+                                    <th>Prénom</th>
                                     <th>Domaine</th>
                                     <th>Type</th>
                                     <th>Sous-Domaine</th>
@@ -150,6 +150,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <th>Numéro de Transaction</th>
                                     <th>Photo du Paiement</th>
                                     <th>Date</th>
+                                    <th>Action</th> <!-- Nouvelle colonne pour l'action -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -168,6 +169,9 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?php echo htmlspecialchars($row['payement_numTrans']); ?></td>
                                         <td><img src="<?php echo htmlspecialchars($row['payement_photo']); ?>" alt="Photo du Paiement" class="avatar" data-bs-toggle="modal" data-bs-target="#payementPhotoModal<?php echo $row['payement_id']; ?>"></td>
                                         <td><?php echo htmlspecialchars($row['inscription_dateInscription']); ?></td>
+                                        <td>
+                                            <a href="recu.php?id=<?php echo $row['inscription_id']; ?>" class="btn btn-primary" target="_blank">Reçu</a>
+                                        </td> <!-- Bouton Reçu -->
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
