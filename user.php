@@ -103,14 +103,10 @@ $domaines = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <div class="invalid-feedback">Veuillez télécharger une photo.</div>
                                             </div>
                                             <div class="col-12">
-                                                <label for="datePayement" class="form-label">Date de Payement</label>
+                                                <label for="datePayement" class="form-label">Date de Payement et Inscription</label>
                                                 <input type="date" name="datePayement" class="form-control" id="datePayement" required>
                                             </div>
-                                            <div class="col-12">
-                                                <label for="dateInscription" class="form-label">Date d'Inscription et de Payement</label>
-                                                <input type="datetime-local" name="dateInscription" id="dateInscription" class="form-control" required>
-                                                <div class="invalid-feedback">Veuillez saisir la date d'inscription et de payement.</div>
-                                            </div>
+
 
                                             <button class="btn btn-primary w-100" type="submit">Enregistrer</button>
                                         </form>
