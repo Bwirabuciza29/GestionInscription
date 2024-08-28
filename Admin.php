@@ -3,30 +3,32 @@
 require_once('blade/DashHeader.php');
 // Lien vers l'ASIDE
 require_once('blade/AsideUser.php');
+
 require_once('config.php');
-// Requête pour compter le nombre d'inscriptions avec le statut "en attente"
-$query_en_attente = "SELECT COUNT(*) AS total_en_attente FROM inscription WHERE status = 'en attente'";
-$stmt_en_attente = $conn->prepare($query_en_attente);
-$stmt_en_attente->execute();
-$result_en_attente = $stmt_en_attente->fetch(PDO::FETCH_ASSOC);
-$totalEnAttente = $result_en_attente['total_en_attente'];
+try {
+    // Requête pour compter le nombre d'inscriptions avec le statut "en attente"
+    $query_en_attente = "SELECT COUNT(*) AS total_en_attente FROM inscription WHERE status = 'en attente'";
+    $stmt_en_attente = $conn->prepare($query_en_attente);
+    $stmt_en_attente->execute();
+    $result_en_attente = $stmt_en_attente->fetch(PDO::FETCH_ASSOC);
+    $totalEnAttente = $result_en_attente['total_en_attente'];
 
-// Requête pour compter le nombre d'utilisateurs avec la catégorie "Apprenant"
-$query = "SELECT COUNT(*) AS total_apprenants FROM users WHERE category = 'Apprenant'";
-$stmt = $conn->prepare($query);
-$stmt->execute();
-$result = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Requête pour compter le nombre d'utilisateurs avec la catégorie "Apprenant"
+    $query = "SELECT COUNT(*) AS total_apprenants FROM users WHERE category = 'Apprenant'";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Récupérer le nombre d'apprenants
-$totalApprenants = $result['total_apprenants'];
-// Requête pour compter le nombre d'inscriptions avec le statut "payé"
-$query_paye = "SELECT COUNT(*) AS total_paye FROM inscription WHERE status = 'payé'";
-$stmt_paye = $conn->prepare($query_paye);
-$stmt_paye->execute();
-$result_paye = $stmt_paye->fetch(PDO::FETCH_ASSOC);
-$totalPaye = $result_paye['total_paye'];
-// Récupérer les données de la vue
-$query = "SELECT 
+    // Récupérer le nombre d'apprenants
+    $totalApprenants = $result['total_apprenants'];
+    // Requête pour compter le nombre d'inscriptions avec le statut "payé"
+    $query_paye = "SELECT COUNT(*) AS total_paye FROM inscription WHERE status = 'payé'";
+    $stmt_paye = $conn->prepare($query_paye);
+    $stmt_paye->execute();
+    $result_paye = $stmt_paye->fetch(PDO::FETCH_ASSOC);
+    $totalPaye = $result_paye['total_paye'];
+    // Récupérer les données de la vue
+    $query = "SELECT 
     a.id AS apprenant_id,
     a.nom AS apprenant_nom,
     a.postnom AS apprenant_postnom,
@@ -60,27 +62,27 @@ JOIN
 WHERE
     i.status = 'en attente';
 ";
-$stmt = $conn->prepare($query);
-$stmt->execute();
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-// LE CLIQUE DU BOUTTON
-// Generer le nouveau matricule
-function genererMatricule($conn)
-{
-    $stmt = $conn->prepare("SELECT matricule FROM inscription ORDER BY id DESC LIMIT 1");
+    $stmt = $conn->prepare($query);
     $stmt->execute();
-    $dernierMatricule = $stmt->fetchColumn();
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // LE CLIQUE DU BOUTTON
+    // Generer le nouveau matricule
+    function genererMatricule($conn)
+    {
+        $stmt = $conn->prepare("SELECT matricule FROM inscription ORDER BY id DESC LIMIT 1");
+        $stmt->execute();
+        $dernierMatricule = $stmt->fetchColumn();
 
-    if ($dernierMatricule) {
-        $num = (int)substr($dernierMatricule, 6);
-        $num++;
-        return 'APINPP' . str_pad($num, 3, '0', STR_PAD_LEFT);
-    } else {
-        return 'APINPP001';
+        if ($dernierMatricule) {
+            $num = (int)substr($dernierMatricule, 6);
+            $num++;
+            return 'APINPP' . str_pad($num, 3, '0', STR_PAD_LEFT);
+        } else {
+            return 'APINPP001';
+        }
     }
-}
-// Récupérer les inscriptions en attente
-$query = "SELECT i.id, i.matricule, i.status, a.nom, a.postnom, a.id AS idApprenant, u.category, d.intituleDomaine, sd.description, p.montant, p.datePayement 
+    // Récupérer les inscriptions en attente
+    $query = "SELECT i.id, i.matricule, i.status, a.nom, a.postnom, a.id AS idApprenant, u.category, d.intituleDomaine, sd.description, p.montant, p.datePayement 
           FROM inscription i 
           JOIN apprenant a ON i.idApp = a.id 
           JOIN users u ON u.idApprenant = a.id 
@@ -88,33 +90,40 @@ $query = "SELECT i.id, i.matricule, i.status, a.nom, a.postnom, a.id AS idAppren
           JOIN domaine d ON sd.idDomaine = d.id 
           JOIN payement p ON i.idPayement = p.id 
           WHERE i.status = 'en attente'";
-$stmt = $conn->prepare($query);
-$stmt->execute();
-$inscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $idInscription = $_POST['idInscription'];
-
-    // Changer le statut à "payé"
-    $stmt = $conn->prepare("UPDATE inscription SET status = 'payé', matricule = :matricule WHERE id = :id");
-    $stmt->bindParam(':id', $idInscription);
-
-    // Générer un nouveau matricule
-    $nouveauMatricule = genererMatricule($conn);
-    $stmt->bindParam(':matricule', $nouveauMatricule);
-
+    $stmt = $conn->prepare($query);
     $stmt->execute();
+    $inscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Envoyer une notification à l'apprenant
-    $stmt = $conn->prepare("INSERT INTO notifications (idApprenant, message) VALUES (:idApprenant, :message)");
-    $stmt->bindParam(':idApprenant', $_POST['idApprenant']);
-    $message = "Votre paiement a été validé. Votre nouveau matricule est $nouveauMatricule.";
-    $stmt->bindParam(':message', $message);
-    $stmt->execute();
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $idInscription = $_POST['idInscription'];
 
-    // Rediriger pour éviter le double POST
-    header("Location: admin.php");
-    exit();
+        // Changer le statut à "payé"
+        $stmt = $conn->prepare("UPDATE inscription SET status = 'payé', matricule = :matricule WHERE id = :id");
+        $stmt->bindParam(':id', $idInscription);
+
+        // Générer un nouveau matricule
+        $nouveauMatricule = genererMatricule($conn);
+        $stmt->bindParam(':matricule', $nouveauMatricule);
+
+        $stmt->execute();
+
+        // Envoyer une notification à l'apprenant
+        $stmt = $conn->prepare("INSERT INTO notifications (idApprenant, message) VALUES (:idApprenant, :message)");
+        $stmt->bindParam(':idApprenant', $_POST['idApprenant']);
+        $message = "Votre paiement a été validé. Votre nouveau matricule est $nouveauMatricule.";
+        $stmt->bindParam(':message', $message);
+        $stmt->execute();
+
+        // Rediriger pour éviter le double POST
+        header("Location: valide.php");
+        exit();
+    }
+} catch (PDOException $e) {
+    // Afficher les erreurs de base de données
+    echo "Erreur : " . $e->getMessage();
+} catch (Exception $e) {
+    // Afficher toute autre erreur
+    echo "Erreur : " . $e->getMessage();
 }
 ?>
 
@@ -249,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <td><?= $inscription['datePayement'] ?></td>
                                         <td><?= $inscription['status'] ?></td>
                                         <td>
-                                            <form method="post">
+                                            <form method="post" action="enreg.php">
                                                 <input type="hidden" name="idInscription" value="<?= $inscription['id'] ?>">
                                                 <input type="hidden" name="idApprenant" value="<?= $inscription['idApprenant'] ?>">
                                                 <button class="btn btn-outline-primary" type="submit">Valider</button>
