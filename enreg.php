@@ -1,7 +1,6 @@
 <?php
-// Assurez-vous de démarrer la session si ce n'est pas déjà fait
+
 session_start();
-// Inclure le fichier de connexion à la base de données
 include('config.php');
 
 // Vérifier si la requête est un POST
