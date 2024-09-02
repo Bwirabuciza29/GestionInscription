@@ -111,6 +111,8 @@ if (isset($_GET['id'])) {
                             echo "<strong>Fait à Goma le</strong> " . htmlspecialchars($result['inscription_dateInscription']) . ".";
                             echo "</p>";
                             echo "</div>";
+                            echo "<div class='p-0 pb-4 text-center'>Signé par <strong>KASEREKA Fidèle</strong></div>";
+                            echo "<p class='text-center'><strong>En date du:</strong> " . date("d/m/Y") . "</p>";
                         } else {
                             echo "<div class='alert alert-danger'>Aucun reçu trouvé pour cet ID.</div>";
                         }
