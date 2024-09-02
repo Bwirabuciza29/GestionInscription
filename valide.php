@@ -170,8 +170,11 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td><img src="<?php echo htmlspecialchars($row['payement_photo']); ?>" alt="Photo du Paiement" class="avatar" data-bs-toggle="modal" data-bs-target="#payementPhotoModal<?php echo $row['payement_id']; ?>"></td>
                                         <td><?php echo htmlspecialchars($row['inscription_dateInscription']); ?></td>
                                         <td>
-                                            <a href="recu.php?id=<?php echo $row['inscription_id']; ?>" class="btn btn-primary" target="_blank">Reçu</a>
-                                        </td> <!-- Bouton Reçu -->
+                                            <a href="recu.php?id=<?php echo $row['inscription_id']; ?>" class="btn btn-outline-success" target="_blank">Reçu</a>
+                                        </td>
+                                        <td>
+                                            <a href="fiche.php?id=<?php echo $row['inscription_id']; ?>" class="btn btn-outline-primary" target="_blank">Fiche</a>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
